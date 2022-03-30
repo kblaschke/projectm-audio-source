@@ -1,0 +1,33 @@
+/*
+ * Header template that is filled by CMake with the available audio backends.
+ * The generated header is non-portable because it contains absolute header paths.
+ */
+
+@AUDIO_BACKEND_INCLUDE_LIST@
+#include <array>
+
+namespace projectMAudio {
+
+/**
+ * @var List of available, compiled-in audio backends.
+ */
+static const std::array<std::string, @AUDIO_BACKEND_COUNT@> s_backendNames = {
+    @AUDIO_BACKEND_NAME_LIST@
+};
+
+/**
+ * @brief Factory method that instantiates a backend by its name.
+ *
+ * This function is populated during build configuration with available backends by CMake.
+ *
+ * @param backendName The name of the backend to instantiate as returned by Backend::Enumerate().
+ * @param projectMInstance The projectM instance that will receive the audio data.
+ * @return Either a pointer to the newly created backend instance, or nullptr if there is no backend with this name.
+ */
+Backend::Ptr s_BackendFactory(const std::string& backendName, projectm_handle projectMInstance)
+{
+@AUDIO_BACKEND_FACTORY_LIST@
+    return Backend::Ptr();
+}
+
+} // namespace projectM
