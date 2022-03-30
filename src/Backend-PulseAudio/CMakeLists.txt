@@ -5,6 +5,10 @@ endif()
 add_library(projectM-AudioBackend-PulseAudio OBJECT
         PulseAudioBackend.cpp
         PulseAudioBackend.h
+        PulseAudioDevice.cpp
+        PulseAudioDevice.h
+        PulseAudioServerConnection.cpp
+        PulseAudioServerConnection.h
         )
 
 target_include_directories(projectM-AudioBackend-PulseAudio

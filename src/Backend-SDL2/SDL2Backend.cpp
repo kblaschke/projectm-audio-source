@@ -16,9 +16,9 @@ Device::List SDL2Backend::AvailableAudioDevices()
 {
     Device::List audioDevices;
     SDL_AudioSpec desiredAudioSpec{
-        .freq = 44100,
+        .freq = 48000,
         .format = AUDIO_F32,
-        .channels = 1,
+        .channels = 2,
         .samples = static_cast<uint16_t>(projectm_pcm_get_max_samples()),
         .callback = nullptr,
         .userdata = nullptr

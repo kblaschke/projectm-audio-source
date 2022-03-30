@@ -1,11 +1,33 @@
 ### projectM frontend audio backend library
 
+# Check whether we have dlopen()/dlsym() or Load[Packaged]Library()/GetProcAddress() available,
+# then select the proper implementation
+include(CheckSymbolExists)
+check_symbol_exists(dlopen "dlfcn.h" AUDIO_SOURCE_HAVE_DLOPEN)
+check_symbol_exists(dlsym "dlfcn.h" AUDIO_SOURCE_HAVE_DLSYM)
+check_symbol_exists(LoadLibrary "libloaderapi.h" AUDIO_SOURCE_HAVE_LOADLIBRARY)
+check_symbol_exists(LoadPackagedLibrary "winbase.h" AUDIO_SOURCE_HAVE_LOADPACKAGEDLIBRARY)
+check_symbol_exists(GetProcAddress "libloaderapi.h" AUDIO_SOURCE_HAVE_GETPROCADDRESS)
+
+#if(AUDIO_SOURCE_HAVE_DLOPEN AND AUDIO_SOURCE_HAVE_DLSYM)
+set(AUDIO_SOURCE_LIBRARY_LOAD_IMPL dlopen)
+#elseif((AUDIO_SOURCE_HAVE_LOADLIBRARY OR AUDIO_SOURCE_HAVE_LOADPACKAGEDLIBRARY) AND AUDIO_SOURCE_HAVE_GETPROCADDRESS)
+#    set(AUDIO_SOURCE_LIBRARY_LOAD_IMPL windows)
+#else()
+# message(FATAL_ERROR "projectM-AudioSource: Could not determine dynamic library loader interface.\n"
+#         "Currently, only systems using dlopen() and Load[Packaged]Library() are supported.")
+#endif()
+
 add_library(projectM-AudioSource STATIC
         "${CMAKE_CURRENT_BINARY_DIR}/BackendList_Generated.h"
         projectMAudioSource/Device.cpp
         projectMAudioSource/Device.h
         projectMAudioSource/Backend.cpp
         projectMAudioSource/Backend.h
+        projectMAudioSource/DynamicLibraryLoader/DynamicLibraryLoader.cpp
+        projectMAudioSource/DynamicLibraryLoader/DynamicLibraryLoader.h
+        projectMAudioSource/DynamicLibraryLoader/DynamicLibraryLoaderImpl_${AUDIO_SOURCE_LIBRARY_LOAD_IMPL}.cpp
+        projectMAudioSource/DynamicLibraryLoader/DynamicLibraryLoaderImpl_${AUDIO_SOURCE_LIBRARY_LOAD_IMPL}.h
         )
 
 target_include_directories(projectM-AudioSource

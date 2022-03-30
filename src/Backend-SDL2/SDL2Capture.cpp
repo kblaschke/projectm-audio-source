@@ -19,9 +19,9 @@ SDL2Capture::~SDL2Capture()
 bool SDL2Capture::OpenAudioDevice()
 {
     SDL_AudioSpec desiredAudioSpec{
-        .freq = 44100,
+        .freq = 48000,
         .format = AUDIO_F32,
-        .channels = 1,
+        .channels = 2,
         .samples = static_cast<uint16_t>(projectm_pcm_get_max_samples()),
         .callback = &SDL2Capture::AudioDataCallback,
         .userdata = this
