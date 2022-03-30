@@ -7,14 +7,22 @@ FakeBackend::FakeBackend(projectm_handle projectMInstance)
 {
 }
 
+FakeBackend::~FakeBackend()
+{
+    PrivateStopCapture();
+}
+
 Device::List FakeBackend::AvailableAudioDevices()
 {
-    return { std::make_shared<Device>("Fake", *this) };
+    return {
+        std::make_shared<Device>("Random", *this),
+        std::make_shared<Device>("Beat", *this)
+    };
 }
 
 std::string FakeBackend::Name() const
 {
-    return std::string();
+    return "Fake";
 }
 
 bool FakeBackend::StartCapture(Device::Ptr captureDevice)
@@ -26,7 +34,18 @@ bool FakeBackend::StartCapture(Device::Ptr captureDevice)
 
     if (!_thread)
     {
-        _thread = std::make_unique<std::thread>(&FakeCaptureThread::GenerateFakeAudio, &_fakeDataGenerator);
+        if (captureDevice->Name() == "Random")
+        {
+            _thread = std::make_unique<std::thread>(&FakeAudioGenerator::GenerateRandomNoise, &_fakeDataGenerator);
+        }
+        else if (captureDevice->Name() == "Beat")
+        {
+            _thread = std::make_unique<std::thread>(&FakeAudioGenerator::GenerateBeat, &_fakeDataGenerator);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     return true;
@@ -34,12 +53,18 @@ bool FakeBackend::StartCapture(Device::Ptr captureDevice)
 
 void FakeBackend::StopCapture()
 {
-    if(_thread)
+    PrivateStopCapture();
+}
+
+void FakeBackend::PrivateStopCapture()
+{
+    if (_thread)
     {
         _fakeDataGenerator.Stop();
         _thread->join();
         _thread.reset();
     }
 }
+
 
 } // namespace projectM

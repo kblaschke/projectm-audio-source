@@ -1,8 +1,8 @@
 add_library(projectM-AudioBackend-Fake OBJECT
+        FakeAudioGenerator.cpp
+        FakeAudioGenerator.h
         FakeBackend.cpp
         FakeBackend.h
-        FakeCaptureThread.cpp
-        FakeCaptureThread.h
         )
 
 target_include_directories(projectM-AudioBackend-Fake
