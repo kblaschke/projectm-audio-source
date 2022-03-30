@@ -12,9 +12,12 @@ The library currently supports the following backends:
 - JACK: Windows, macOS, Linux, *BSD
 - WASAPI: Windows
 
+There is also a Fake backend available on all platforms which generates random noise and can be used to make the
+visualisation more appealing if no audio sources are available.
+
 ## Directory Structure
 
-The library directory is structured into subdirectories:
+The library is split into subdirectories:
 
 - `projectMAudioSource` contains the public interface classes used by a frontend application. Its purpose is to fully
   abstract the implementation details of the different audio backends.
